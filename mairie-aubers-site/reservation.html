@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Réservations - Mairie d'Aubers</title>
+
+    <style>
+        :root {
+            --bg: #f4f6f9;
+            --text: #2c3e50;
+            --header-bg: #2c3e50;
+            --header-text: #ffffff;
+            --card-bg: #ffffff;
+            --card-shadow: rgba(0, 0, 0, 0.1);
+            --status-confirm: green;
+            --status-cancel: red;
+            --status-pending: orange;
+            --toggle-bg: rgba(255, 255, 255, 0.9);
+            --toggle-text: #2c3e50;
+            --toggle-border: rgba(0, 0, 0, 0.12);
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        body.dark {
+            --bg: #10131e;
+            --text: #e5e7eb;
+            --header-bg: #161c2d;
+            --header-text: #f8fafc;
+            --card-bg: #1f283e;
+            --card-shadow: rgba(0, 0, 0, 0.5);
+            --toggle-bg: rgba(255, 255, 255, 0.08);
+            --toggle-text: #f8fafc;
+            --toggle-border: rgba(255, 255, 255, 0.18);
+        }
+
+        body.light {
+            --bg: #f4f6f9;
+            --text: #2c3e50;
+            --header-bg: #2c3e50;
+            --header-text: #ffffff;
+            --card-bg: #ffffff;
+            --card-shadow: rgba(0, 0, 0, 0.1);
+            --toggle-bg: rgba(255, 255, 255, 0.9);
+            --toggle-text: #2c3e50;
+            --toggle-border: rgba(0, 0, 0, 0.12);
+        }
+
+        header {
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header-actions {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+
+        .theme-toggle {
+            border: 1px solid var(--toggle-border);
+            background-color: var(--toggle-bg);
+            color: var(--toggle-text);
+            padding: 10px 14px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .container {
+            width: 80%;
+            margin: 30px auto;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .reservation {
+            background-color: var(--card-bg);
+            color: var(--text);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+
+        .reservation span {
+            display: block;
+            margin: 5px 0;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .confirmée {
+            color: green;
+        }
+
+        .annulée {
+            color: red;
+        }
+
+        .en-attente {
+            color: orange;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Réservations - Mairie d'Aubers</h1>
+    <div class="header-actions">
+        <button id="themeToggle" class="theme-toggle">Mode sombre</button>
+    </div>
+</header>
+
+<div class="container">
+    <h2>Liste de vos réservations</h2>
+
+    <div id="listeReservations"></div>
+</div>
+
+<script>
+    // Données simulées (à remplacer par une API plus tard)
+    const reservations = [
+        {
+            salle: "Salle des fêtes",
+            date: "10/04/2026",
+            dateFin: "10/04/2026",
+            heure: "18:00",
+            statut: "confirmée"
+        },
+        {
+            salle: "Salle polyvalente",
+            date: "15/04/2026",
+            dateFin: "15/04/2026",
+            heure: "14:00",
+            statut: "en-attente"
+        },
+        {
+            salle: "Salle réunion",
+            date: "20/04/2026",
+            dateFin: "20/04/2026",
+            heure: "09:00",
+            statut: "annulée"
+        }
+    ];
+
+    const container = document.getElementById("listeReservations");
+
+    reservations.forEach(reservation => {
+        const div = document.createElement("div");
+        div.classList.add("reservation");
+
+        div.innerHTML = `
+            <span><strong>Salle :</strong> ${reservation.salle}</span>
+            <span><strong>Date début :</strong> ${reservation.date}</span>
+            <span><strong>Date fin :</strong> ${reservation.dateFin}</span>
+            <span><strong>Heure :</strong> ${reservation.heure}</span>
+            <span class="status ${reservation.statut}">
+                Statut : ${reservation.statut}
+            </span>
+        `;
+
+        container.appendChild(div);
+    });
+
+    const themeToggle = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('theme');
+    const defaultTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+    function applyTheme(theme) {
+        document.body.classList.remove('light', 'dark');
+        document.body.classList.add(theme);
+        localStorage.setItem('theme', theme);
+        themeToggle.textContent = theme === 'dark' ? 'Mode clair' : 'Mode sombre';
+    }
+
+    themeToggle.addEventListener('click', () => {
+        const nextTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
+        applyTheme(nextTheme);
+    });
+
+    applyTheme(defaultTheme);
+</script>
+
+</body>
+</html>

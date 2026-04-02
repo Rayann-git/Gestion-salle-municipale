@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion - Mairie d'Aubers</title>
+    <style>
+        :root {
+            --bg: linear-gradient(135deg, #5069b6 0%, #2f4f9c 100%);
+            --text: #ffffff;
+            --box-bg: rgba(15, 23, 42, 0.88);
+            --border: rgba(255, 255, 255, 0.18);
+            --input-bg: rgba(255, 255, 255, 0.08);
+            --input-color: #ffffff;
+            --placeholder: rgba(255, 255, 255, 0.72);
+            --button-bg: #ffd066;
+            --button-color: #2c3e50;
+            --button-hover: #ffcc33;
+            --small-note: rgba(255, 255, 255, 0.8);
+            --toggle-bg: rgba(255, 255, 255, 0.18);
+            --toggle-text: #ffffff;
+            --box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            position: relative;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body.light {
+            --bg: linear-gradient(135deg, #ffffff 0%, #d9e2ef 100%);
+            --text: #1f2937;
+            --box-bg: rgba(255, 255, 255, 0.95);
+            --border: rgba(148, 163, 184, 0.3);
+            --input-bg: rgba(255, 255, 255, 0.95);
+            --input-color: #1f2937;
+            --placeholder: rgba(100, 116, 139, 0.8);
+            --button-bg: #2c3e50;
+            --button-color: #ffffff;
+            --button-hover: #1f2a3f;
+            --small-note: #4b5563;
+            --toggle-bg: rgba(255, 255, 255, 0.85);
+            --toggle-text: #1f2937;
+            --box-shadow: 0 20px 50px rgba(148, 163, 184, 0.2);
+        }
+
+        body.dark {
+            --bg: linear-gradient(135deg, #5069b6 0%, #2f4f9c 100%);
+            --text: #ffffff;
+            --box-bg: rgba(15, 23, 42, 0.88);
+            --border: rgba(255, 255, 255, 0.18);
+            --input-bg: rgba(255, 255, 255, 0.08);
+            --input-color: #ffffff;
+            --placeholder: rgba(255, 255, 255, 0.72);
+            --button-bg: #ffd066;
+            --button-color: #2c3e50;
+            --button-hover: #ffcc33;
+            --small-note: rgba(255, 255, 255, 0.8);
+            --toggle-bg: rgba(255, 255, 255, 0.18);
+            --toggle-text: #ffffff;
+            --box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .login-box {
+            width: 360px;
+            background: var(--box-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--box-shadow);
+            padding: 32px;
+            color: var(--text);
+        }
+
+        .login-box h1 {
+            margin: 0 0 24px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin: 14px 0 6px;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--input-bg);
+            color: var(--input-color);
+            font-size: 15px;
+            outline: none;
+        }
+
+        input::placeholder {
+            color: var(--placeholder);
+        }
+
+        button {
+            width: 100%;
+            margin-top: 22px;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 10px;
+            background-color: var(--button-bg);
+            color: var(--button-color);
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-1px);
+        }
+
+        .small-note {
+            margin-top: 14px;
+            font-size: 13px;
+            color: var(--small-note);
+            text-align: center;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            background-color: var(--toggle-bg);
+            color: var(--toggle-text);
+            padding: 10px 14px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 14px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+<button id="themeToggle" class="theme-toggle">Mode sombre</button>
+<div class="login-box">
+    <h1>Connexion</h1>
+    <form id="loginForm">
+        <label for="email">Adresse email</label>
+        <input id="email" type="email" placeholder="vous@exemple.com" required>
+
+        <label for="password">Mot de passe</label>
+        <input id="password" type="password" placeholder="********" required>
+
+        <button type="submit">Se connecter</button>
+    </form>
+    <p class="small-note">Entrez vos identifiants pour accéder à la page de réservation.</p>
+</div>
+
+<script>
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+        window.location.replace('reservation.html');
+    }
+
+    const form = document.getElementById('loginForm');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+
+        if (!email || !password) {
+            alert('Veuillez renseigner votre adresse email et votre mot de passe.');
+            return;
+        }
+
+        localStorage.setItem('isLoggedIn', 'true');
+        window.location.href = 'reservation.html';
+    });
+
+    const themeToggle = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('theme');
+    const defaultTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+    function applyTheme(theme) {
+        document.body.classList.remove('light', 'dark');
+        document.body.classList.add(theme);
+        localStorage.setItem('theme', theme);
+        themeToggle.textContent = theme === 'dark' ? 'Mode clair' : 'Mode sombre';
+    }
+
+    themeToggle.addEventListener('click', () => {
+        const nextTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
+        applyTheme(nextTheme);
+    });
+
+    applyTheme(defaultTheme);
+</script>
+</body>
+</html>
