@@ -35,7 +35,7 @@ byte gateway[] = { 192, 168, 10,  1  };
 byte subnet[]  = { 255, 255, 255,  0  };
 
 // IP du serveur WEB (Candidat 3) - à confirmer avec l'équipe
-const char* SERVER_IP   = "192.168.20.20";  // Serveur Intranet Mairie (Candidat 4)
+const char* SERVER_IP   = "192.168.10.100"; // Serveur WEB (Candidat 3) - même réseau que l'Arduino
 const int   SERVER_PORT = 80;
 
 // ─────────────────────────────────────────────────────────────
@@ -50,13 +50,18 @@ void CentraleAcces::begin() {
   Serial.begin(9600);
   Serial.println("=== Centrale d'acces - Demarrage ===");
 
+  // Désactive le RFID (SS pin 10 = HIGH) avant d'init Ethernet
+  // Évite le conflit SPI entre shield Ethernet et MFRC522
+  pinMode(SS_PIN, OUTPUT);
+  digitalWrite(SS_PIN, HIGH);
+
   // Initialisation Ethernet avec IP statique + gateway
   Ethernet.begin(mac, ip, gateway, subnet);
-  delay(1000);
+  delay(2000);  // Laisse le temps au shield de s'initialiser
 
   Serial.print("[RESEAU] IP Arduino     : ");
   Serial.println(Ethernet.localIP());
-  Serial.print("[RESEAU] Passerelle     : 192.168.10.1");
+  Serial.println("[RESEAU] Passerelle     : 192.168.10.1");
   Serial.print("[RESEAU] Serveur WEB    : ");
   Serial.println(SERVER_IP);
 
@@ -70,7 +75,17 @@ void CentraleAcces::begin() {
 
 void CentraleAcces::verifierAutorisation(Badge badge) {
   Serial.println("--- Verification en cours ---");
+
+  // Désactive le RFID (RST_PIN LOW) avant d'utiliser Ethernet
+  // Évite le conflit SPI entre shield Ethernet et MFRC522
+  digitalWrite(RST_PIN, LOW);
+
   bool autorise = api.verifierBadge(badge);
+
+  // Réactive le RFID après la requête réseau
+  digitalWrite(RST_PIN, HIGH);
+  rfid.begin();
+
   if (autorise) {
     ouvrirPorte();
   } else {
