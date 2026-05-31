@@ -1,0 +1,30 @@
+index.html
+<!-- Structure principale de la page -->
+<div class="header">
+  <div class="emblem">🏛️</div>    <!-- Logo mairie -->
+  <h1>Mairie — Accès Salle</h1>
+  <p class="subtitle">Contrôle d'accès</p>
+</div>
+
+<!-- VUE CONNEXION : affichée au démarrage -->
+<div id="login-view">
+  <input type="email" id="email"
+    placeholder="prenom.nom@mairie.fr"/>
+  <input type="password" id="password"/>
+  <button onclick="handleLogin()">  <!-- login.js -->
+    Se connecter
+  </button>
+</div>
+<!-- TABLEAU DE BORD : masqué jusqu'à connexion -->
+<div id="dashboard-view">
+ <div class="status-panel"> ... </div> <!-- LED porte -->
+ <div class="reservation-panel"> ... </div>
+ <button class="btn-open"
+ onclick="handleOuvrirPorte()"> <!-- dashboard.js -->
+ Ouvrir la porte
+ </button>
+ <div id="log-list"></div> <!-- Journal des accès -->
+</div>
+<!-- Chargement des scripts JS -->
+<script src="login.js"></script> <!-- Authentification -->
+<script src="dashboard.js"></script> <!-- Commande porte -->

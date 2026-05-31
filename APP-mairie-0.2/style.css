@@ -1,0 +1,36 @@
+:root {
+  --navy:  #1a2e4a;
+  --teal:  #009BA3;
+  --green: #2d6a4f;
+  --red:   #c0392b;
+  --font:  'Source Sans 3';
+}
+
+body::after {
+  content: '';
+  position: fixed; top: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--navy), var(--teal), var(--navy));
+}
+
+.status-icon.open {
+  animation: pulse 2s infinite;
+}
+
+.btn-open:hover::before {
+  transform: scaleX(1);
+}
+
+.btn-open {
+ border: 2px solid var(--green);
+ color: var(--green);
+ transition: all 0.2s;
+}
+
+.btn-open::before {
+ content: '';
+ background: var(--green);
+ transform: scaleX(0);
+ transform-origin: left;
+ transition: transform 0.25s;
+}
