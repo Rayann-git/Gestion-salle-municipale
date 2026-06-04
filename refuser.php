@@ -1,10 +1,30 @@
 <?php
+session_start();
 require 'config.php';
 
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
 $id = $_GET['id'];
+$type = $_GET['type'];
+$user_id = $_SESSION['user_id'];
 
-$stmt = $pdo->prepare("UPDATE reservations SET statut='refuse' WHERE id=?");
-$stmt->execute([$id]);
-
-header("Location: gestion_preinscriptions.php");
+if ($type == 'preinscription') {
+    $stmt = $pdo->prepare("UPDATE preinscriptions SET status='refusé' WHERE id=?");
+    $stmt->execute([$id]);
+    // Enregistrer le log
+    $log = $pdo->prepare("INSERT INTO logs (user_id, action, date_action) VALUES (?, ?, NOW())");
+    $log->execute([$user_id, "Refus pré-inscription ID: $id"]);
+    header("Location: gestion_preincriptions.php");
+} else {
+    $stmt = $pdo->prepare("UPDATE reservations SET statut='refusé' WHERE id=?");
+    $stmt->execute([$id]);
+    // Enregistrer le log
+    $log = $pdo->prepare("INSERT INTO logs (user_id, action, date_action) VALUES (?, ?, NOW())");
+    $log->execute([$user_id, "Refus réservation ID: $id"]);
+    header("Location: gestion_reservations.php");
+}
+exit();
 ?>
