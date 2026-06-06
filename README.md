@@ -41,7 +41,7 @@ Ce dépôt contient **mon périmètre : la centrale Arduino de contrôle d'accè
 │                              │                              │
 │   [Candidat 3]          [Candidat 4]                        │
 │   Serveur WEB public    Serveur Intranet                    │
-│   192.168.10.100        Base de données MySQL               │
+│   192.168.20.100        Base de données MySQL               │
 │   Linux/PHP/JSON        Site gestionnaire                   │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -62,7 +62,7 @@ Je suis responsable de la **centrale de gestion d'accès physique Arduino** :
 | Fonction | Détail |
 |---|---|
 | 📡 Lecture badge | Module RFID MFRC522 via SPI |
-| 🌐 Vérification autorisation | Requête HTTP GET → serveur 192.168.10.100 |
+| 🌐 Vérification autorisation | Requête HTTP GET → serveur 192.168.20.100 |
 | 🔒 Commande porte | Ventouse magnétique 12V via relais |
 | 🟢🔴 Signalisation | LED verte (accès OK) / LED rouge (refus) |
 | ⚠️ Gestion erreurs | Timeout réseau, serveur injoignable |
@@ -155,7 +155,7 @@ Pin 5 HIGH → Relais inactif → Contact NC fermé → LED rouge → PORTE FERM
 |---|---|---|
 | Arduino | 192.168.10.20 | Centrale d'accès |
 | Passerelle (Firewall) | 192.168.10.1 | Routage inter-réseaux |
-| Serveur WEB | 192.168.10.100 | API d'autorisation |
+| Serveur WEB | 192.168.20.100 | API d'autorisation (réseau Mairie, via tunnel IPSec) |
 | Masque | 255.255.255.0 | /24 |
 
 ---
@@ -173,7 +173,7 @@ Pin 5 HIGH → Relais inactif → Contact NC fermé → LED rouge → PORTE FERM
 │         │                                        │
 │         ▼                                        │
 │  RST_PIN LOW (désactiver RFID)                   │
-│  GET /api/badge?uid=F9A7A6E2 → 192.168.10.100   │
+│  GET /api/badge?uid=F9A7A6E2 → 192.168.20.100   │
 │         │                                        │
 │         ├──── {"autorisation": true}  ────────►  │
 │         │     Relais LOW → Porte ouverte 5s      │
@@ -203,13 +203,13 @@ Pin 5 HIGH → Relais inactif → Contact NC fermé → LED rouge → PORTE FERM
 
 ## 🐛 Problèmes rencontrés et solutions
 
-### Bug 1 — IP serveur sur mauvais réseau
+### Bug 1 — Mauvaise adresse IP du serveur
 ```cpp
-// ❌ AVANT : serveur sur réseau mairie (inaccessible directement)
+// ❌ AVANT : adresse erronée
 const char* SERVER_IP = "192.168.20.20";
 
-// ✅ APRÈS : serveur sur même réseau que l'Arduino
-const char* SERVER_IP = "192.168.10.100";
+// ✅ APRÈS : serveur intranet Mairie, accessible via le tunnel IPSec
+const char* SERVER_IP = "192.168.20.100";
 ```
 
 ### Bug 2 — Shield Ethernet non initialisé (IP = 0.0.0.0)
@@ -279,7 +279,7 @@ Serial.println("[RESEAU] Passerelle : 192.168.10.1");
 1. Cloner ce dépôt
 2. Ouvrir `AccesSalle.ino` dans Arduino IDE
 3. Sélectionner **Arduino Uno** comme carte
-4. Vérifier les pins dans `CentraleAcces.h` :
+4. Vérifier les pins dans `CentraleAcces.cpp` :
    ```cpp
    #define SS_PIN  8   // SS MFRC522
    #define RST_PIN 9   // RST MFRC522
