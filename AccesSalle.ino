@@ -29,12 +29,11 @@
 // CentraleAcces centrale; → crée un objet de type CentraleAcces
 // Cela appelle automatiquement le constructeur CentraleAcces()
 // qui crée à son tour tous les sous-objets :
-//   - rfid      (C_LecteurRFID avec pins 10 et 9)
-//   - api       (C_API avec IP 192.168.20.20 port 80)
+//   - rfid      (C_LecteurRFID avec pins 8 et 9)
+//   - api       (C_API avec IP 192.168.20.100 port 80)
 //   - ventouse  (C_Ventouse avec pin 5)
 // ============================================================
 CentraleAcces centrale;
-
 
 // ============================================================
 // FONCTION setup()
@@ -49,7 +48,6 @@ CentraleAcces centrale;
 void setup() {
   centrale.begin();
 }
-
 
 // ============================================================
 // FONCTION loop()
