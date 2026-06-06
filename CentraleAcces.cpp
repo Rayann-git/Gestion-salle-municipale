@@ -8,7 +8,7 @@
 //   PC-Salle          : 192.168.10.10
 //   Arduino RFID      : 192.168.10.20 (cette carte)
 //   WiFi MR46         : 192.168.10.30
-//   Serveur WEB       : 192.168.10.100 (Candidat 3 - à confirmer)
+//   Serveur WEB       : 192.168.20.100 (Candidat 3 - réseau Mairie, via tunnel IPSec)
 //
 // Câblage relais (pin 5) :
 //   COM → 12V externe
@@ -18,7 +18,7 @@
 
 #include "CentraleAcces.h"
 
-#define SS_PIN      10
+#define SS_PIN       8
 #define RST_PIN      9
 #define PIN_RELAIS   5    // Relais sur pin 5
 
@@ -35,7 +35,7 @@ byte gateway[] = { 192, 168, 10,  1  };
 byte subnet[]  = { 255, 255, 255,  0  };
 
 // IP du serveur WEB (Candidat 3) - à confirmer avec l'équipe
-const char* SERVER_IP   = "192.168.10.100"; // Serveur WEB (Candidat 3) - même réseau que l'Arduino
+const char* SERVER_IP   = "192.168.20.100"; // Serveur WEB (Candidat 3) - réseau Mairie, via tunnel IPSec
 const int   SERVER_PORT = 80;
 
 // ─────────────────────────────────────────────────────────────
@@ -50,7 +50,7 @@ void CentraleAcces::begin() {
   Serial.begin(9600);
   Serial.println("=== Centrale d'acces - Demarrage ===");
 
-  // Désactive le RFID (SS pin 10 = HIGH) avant d'init Ethernet
+  // Désactive le RFID (SS pin 8 = HIGH) avant d'init Ethernet
   // Évite le conflit SPI entre shield Ethernet et MFRC522
   pinMode(SS_PIN, OUTPUT);
   digitalWrite(SS_PIN, HIGH);
